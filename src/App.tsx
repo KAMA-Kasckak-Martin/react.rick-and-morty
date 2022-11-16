@@ -6,9 +6,11 @@ import {CHARACTER} from "./components/characterRickAndMorty";
 
 function App() {
   return (
-    <div className="App">
-      <GalleryComponent characters={CHARACTER}></GalleryComponent>
-    </div>
+      <><h1>Rick and Morty</h1>
+          <div className="App">
+              <GalleryComponent characters={CHARACTER}></GalleryComponent>
+          </div>
+      </>
   );
 }
 
