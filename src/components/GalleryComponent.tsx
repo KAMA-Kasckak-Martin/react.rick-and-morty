@@ -9,33 +9,39 @@ type GalleryComponentProps={
 }
 
 
+
+
 export default function GalleryComponent(props:GalleryComponentProps){
     let [searchCharakter, setCharacter]=useState("all");
+
+    let [filteredCharacters, setFilterdCharacters]=useState(props.characters);
+
+    function deleteCharacter(id:number){
+        const newCharacterList = props.characters.filter(function (charakter){
+            if (charakter.id !== id){
+                return true
+            }
+        })
+        setFilterdCharacters(newCharacterList)
+    }
 
     const textOutput=(event: ChangeEvent<HTMLInputElement>)=>{
         setCharacter(event.target.value)
         console.log(event.target.value)
-
     }
 
-
-    const result = props.characters.filter((charakter)=>{
+    const result = filteredCharacters.filter((charakter)=>{
         if (charakter.name.toLowerCase().includes(searchCharakter)){
             return true
         }else {
             return false
         }
-
     })
 
     const charakterComponents = result.map((charakter) => {
-        return<CharakterCardComponent charakter={charakter}key={charakter.id}></CharakterCardComponent>
+        return<CharakterCardComponent charakter={charakter}key={charakter.id} deleteCharacter={deleteCharacter}></CharakterCardComponent>
     })
-
-
-
     return (
-
     <div>
         <input onChange={textOutput} />
         <section>{charakterComponents}</section>
