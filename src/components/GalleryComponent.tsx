@@ -1,8 +1,9 @@
 
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import {Charekter} from "../model/Charekter";
 import CharakterCardComponent from "./CharakterCardComponent";
 import "./Galery.css"
+import axios from "axios";
 
 type GalleryComponentProps={
     characters:Charekter[]
@@ -12,26 +13,40 @@ type GalleryComponentProps={
 
 
 export default function GalleryComponent(props:GalleryComponentProps){
-    let [searchCharakter, setCharacter]=useState("all");
+    let [searchCharacter, setSearchCharacter]=useState("all");
 
-    let [filteredCharacters, setFilterdCharacters]=useState(props.characters);
+
+    const [characters,setCharacters]=useState<Charekter[]>([])
+
+    useEffect(()=>{
+        getCharakter()
+    },[])
+
+    function getCharakter(){
+        axios.get("https://rickandmortyapi.com/api/character")
+            .then((response)=>{
+                setCharacters(response.data.results)
+            })
+    }
+
+
 
     function deleteCharacter(id:number){
-        const newCharacterList = props.characters.filter(function (charakter){
+        const newCharacterList = characters.filter(function (charakter){
             if (charakter.id !== id){
                 return true
             }
         })
-        setFilterdCharacters(newCharacterList)
+        setCharacters(newCharacterList)
     }
 
     const textOutput=(event: ChangeEvent<HTMLInputElement>)=>{
-        setCharacter(event.target.value)
+        setSearchCharacter(event.target.value)
         console.log(event.target.value)
     }
-
-    const result = filteredCharacters.filter((charakter)=>{
-        if (charakter.name.toLowerCase().includes(searchCharakter)){
+    console.log(characters)
+    const result = characters.filter((character)=>{
+        if (character.name.toLowerCase().includes(searchCharacter)){
             return true
         }else {
             return false
@@ -39,7 +54,7 @@ export default function GalleryComponent(props:GalleryComponentProps){
     })
 
     const charakterComponents = result.map((charakter) => {
-        return<CharakterCardComponent charakter={charakter}key={charakter.id} deleteCharacter={deleteCharacter}></CharakterCardComponent>
+        return<CharakterCardComponent character={charakter}key={charakter.id} deleteCharacter={deleteCharacter}></CharakterCardComponent>
     })
     return (
     <div>
